@@ -32,8 +32,8 @@ class Server:
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         '''return the desired page'''
-        assert isinstance(page, int) and page >= 0
-        assert isinstance(page_size, int) and page_size >= 0
+        assert isinstance(page, int) and page > 0
+        assert isinstance(page_size, int) and page_size > 0
         start, end = index_range(page, page_size)
         dataset_list = self.dataset()
         return dataset_list[start: end]
@@ -41,18 +41,16 @@ class Server:
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
         total_items = len(self.dataset())
         total_pages = (total_items + page_size - 1) // page_size
-        if page > total_pages:
-            page_size = 0
-        if (page + 1 < total_pages):
+        if (page < total_pages):
             next_page = page + 1
         else:
             next_page = None
-        if (page - 1 > 0):
+        if (page > 1):
             prev_page = page - 1
         else:
             prev_page = None
         return {
-            'page_size': page_size,
+            'page_size': len(self.get_page(page, page_size)),
             'page': page,
             'data': self.get_page(page, page_size),
             'next_page': next_page,
