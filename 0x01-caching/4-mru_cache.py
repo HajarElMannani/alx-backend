@@ -25,7 +25,7 @@ class MRUCache(BaseCaching):
                 mru_key, _ = self.cache_data.popitem(last=True)
                 print("DISCARD: {}".format(mru_key))
             self.cache_data[key] = item
-            self.cache_data.move_to_end(key, last=False)
+            self.cache_data.move_to_end(key)
 
     def get(self, key):
         ''' return the value in self.cache_data linked to key'''
