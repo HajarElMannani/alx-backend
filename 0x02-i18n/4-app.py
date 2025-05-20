@@ -5,7 +5,7 @@ from flask_babel import Babel, _
 
 
 class Config:
-    '''Flask babbel config'''
+    '''Flask babel config'''
     LANGUAGES = ['en', 'fr']
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = "UTC"
@@ -19,9 +19,9 @@ babel = Babel(app)
 @babel.localeselector
 def get_locale() -> str:
     '''get language from the user accept'''
-    lan = request.args.get('locale')
-    if lan in app.config['LANGUAGES']:
-        return lan
+    locale = request.args.get('locale')
+    if locale in app.config['LANGUAGES']:
+        return locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
