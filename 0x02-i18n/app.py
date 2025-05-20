@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+'''Flask app'''
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, _
 from typing import Dict
@@ -6,9 +8,11 @@ from datetime import datetime
 
 
 class Config:
+    '''Flask babbel config'''
     LANGUAGES = ['en', 'fr']
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = "UTC"
+
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -17,9 +21,12 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
+
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 app.config.from_object(Config)
 babel = Babel(app)
+
 
 @babel.localeselector
 def get_locale() -> str:
@@ -33,6 +40,7 @@ def get_locale() -> str:
             return local_user
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
+
 def get_user() -> Dict:
     ''' function that returns a user dictionary or None if the ID
      cannot be found or if login_as was not passed'''
@@ -43,6 +51,7 @@ def get_user() -> Dict:
         except ValueError:
             return None
     return None
+
 
 @babel.timezoneselector
 def get_timezone() -> str:
@@ -60,10 +69,12 @@ def get_timezone() -> str:
             pass
     return 'UTC'
 
+
 @app.before_request
 def before_request() -> None:
     '''use get_user to find a user if any'''
     g.user = get_user()
+
 
 @app.route('/')
 def get_index() -> str:
@@ -74,5 +85,6 @@ def get_index() -> str:
     current_time = time_now.strftime('%Y-%m-%d %H:%M:%S')
     return render_template('index.html', current_time=current_time)
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
