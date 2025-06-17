@@ -1,5 +1,5 @@
 import express from 'express';
-import kue from 'kue'
+import kue from 'kue';
 import { createClient } from 'redis';
 import { promisify } from 'util';
 
@@ -8,16 +8,20 @@ const client = createClient();
 const getAsync = promisify(client.get).bind(client);
 const setAsync = promisify(client.set).bind(client);
 function reserveSeat(number) {
-  return setAsync('available-seats', number.toString());
+  return setAsync('available_seats', number.toString());
 }
 async function getCurrentAvailableSeats() {
-  const value = await getAsync('available-seats');
+  const value = await getAsync('available_seats');
   return Number(value);
 }
 reserveSeat(50);
 let reservationEnabled = true;
 const queue = kue.createQueue();
 app.get('/available_seats', async (req, res) => {
+  const seats = await getCurrentAvailableSeats();
+  res.json({ numberOfAvailableSeats: seats.toString() });
+});
+app.get('/reserve_seat', async (req, res) => {
   if (!reservationEnabled) {
     return res.json({ status: 'Reservation are blocked' });
   }
