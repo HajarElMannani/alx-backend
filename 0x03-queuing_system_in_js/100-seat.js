@@ -32,10 +32,10 @@ app.get('/reserve_seat', async (req, res) => {
     return res.json({ status: 'Reservation failed' });
   });
   job.on('complete', () => {
-    console.log(`Notification job ${job.id} completed`);
+    console.log(`Seat reservation job ${job.id} completed`);
   });
   job.on('failed', (err) => {
-    console.log(`Notification job ${job.id} failed: ${err}`);
+    console.log(`Seat reservation job ${job.id} failed: ${err}`);
   });
 });
 app.get('/process', (req, res) => {
@@ -54,4 +54,4 @@ app.get('/process', (req, res) => {
   });
 });
 app.listen(1245);
-});
+}
