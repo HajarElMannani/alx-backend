@@ -9,8 +9,8 @@ const products = [
   { itemId: 3, itemName: 'Suitcase 650',  price: 350, initialAvailableQuantity: 2 },
   { itemId: 4, itemName: 'Suitcase 1050', price: 550, initialAvailableQuantity: 5 },
 ];
-finction getItemById(id) {
-  return listProducts.find(produc => produc.itemId === id);
+function getItemById(id) {
+  return products.find(produc => produc.itemId === id);
 }
 const client = createClient();
 const getAsync = promisify(client.get).bind(client);
@@ -20,7 +20,7 @@ function reserveStockById(itemId, stock) {
 }
 async function getCurrentReservedStockById(itemId) {
   const stock = await getAsync(`item.${itemId}`);
-  return number(stock) || 0;
+  return Number(stock) || 0;
 }
 app.get('/list_products', (req, res) => {
   res.json(products);
