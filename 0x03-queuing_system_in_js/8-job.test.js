@@ -28,7 +28,7 @@ describe('createPushNotificationsJobs', () => {
     ];
     createPushNotificationsJobs(jobs, queue);
     expect(queue.testMode.jobs).to.have.lengthOf(2);
-    queue.testMode.jobs.forEach((jobs, idx) => {
+    queue.testMode.jobs.forEach((job, idx) => {
       expect(job.type).to.equal('push_notification_code_3');
       expect(job.date).to.deep.equal(job[idx]);
     });
