@@ -17,6 +17,18 @@ async function getCurrentAvailableSeats() {
 reserveSeat(50);
 let reservationEnabled = true;
 const queue = kue.createQueue();
+queue.process('reserve_seat', async (job, done) => {
+  const curr = await getCurrentAvailableSeats();
+  const next = curr - 1;
+  if (next < 0) {
+    return done(new Error('Not enough seats available'));
+  }
+  await reserveSeat(next);
+  if (next === 0) {
+    reservationEnabled = false;
+  }
+  done();
+});
 app.get('/available_seats', async (req, res) => {
   const seats = await getCurrentAvailableSeats();
   res.json({ numberOfAvailableSeats: seats.toString() });
@@ -40,18 +52,5 @@ app.get('/reserve_seat', async (req, res) => {
 });
 app.get('/process', (req, res) => {
   res.json({ status: 'Queue processing' });
-  queue.process('reserve_seat', async (job, done) => {
-    const curr = await getCurrentAvailableSeats();
-    const next = curr - 1;
-    if (next < 0) {
-      return done(new Error('Not enough seats available'));
-    }
-    await reserveSeat(next);
-    if (next === 0) {
-      reservationEnabled = false;
-    }
-    done();
-  });
 });
 app.listen(1245);
-}
