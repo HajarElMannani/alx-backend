@@ -3,8 +3,9 @@ import { expect } from 'chai';
 import createPushNotificationsJobs from './8-job';
 
 describe('createPushNotificationsJobs', () => {
-  const queue =  kue.createQueue();
+  let queue;
   before(() => {
+    queue =  kue.createQueue();
     queue.testMode.enter();
   });
   after(() => {
